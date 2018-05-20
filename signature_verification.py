@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 """
 Created on Tue May 15 08:34:13 2018
-
 @author: C.B. Doorenbos
 """
 
@@ -10,6 +9,10 @@ import scipy as sc;
 import os;
 import scipy.spatial.distance;
 import pandas as pd;
+
+###############  pprint #############
+
+import pprint
 
 def DTWDistance (feature_vector_1, feature_vector_2, distancemetric = 'euclidean'):
     """
@@ -22,7 +25,6 @@ def DTWDistance (feature_vector_1, feature_vector_2, distancemetric = 'euclidean
         distancemetric:
             Same options as scipy.spatial.distance.cdist():
             e.g. euclidean (default), cityblock, cosine...
-
     Returns the DTW distance
     """
     # Compute distance matrix for all sets of feature vectors
@@ -138,13 +140,13 @@ for writerID in train_sigs:
             dissimilarity = min(dissimilarity,
                     DTWDistance(test_sigs[writerID][i], train_sigs[writerID][j]));
         dissimilarities[writerID][i] = dissimilarity;
-        print ("Writer: "+writerID+", i: "+i+", dissimilarity: {}".format(dissimilarity));
+        #print ("Writer: "+writerID+", i: "+i+", dissimilarity: {}".format(dissimilarity));
 
-internal_variation = {};
+'''internal_variation = {};
 
 for writerID in train_sigs:
     score = 0.;
-    names = train_sigs[writerID].keys();
+    names = list(train_sigs[writerID].keys());
     for i in range(len(names)-1):
         for j in range(i+1, len(names)):
             score += (DTWDistance(train_sigs[writerID][names[i]], train_sigs[writerID][names[j]]))**2;
@@ -179,4 +181,16 @@ for i in range(len(output)):
         else:
             falsely_rejected += 1;
 
-print ("Falsely accepted: {}, falsely rejected: {}, sum: {}".format(falsely_accepted, falsely_rejected, falsely_accepted+falsely_rejected));
+#print ("Falsely accepted: {}, falsely rejected: {}, sum: {}".format(falsely_accepted, falsely_rejected, falsely_accepted+falsely_rejected));
+'''
+
+fileHandle=open(os.path.join(".","signature.txt"),'w')
+
+for i in dissimilarities.keys():
+        #print("user{}".format(int(i)),end='')
+        fileHandle.write("user{}".format(int(i)))
+        for j in dissimilarities[i].keys():
+                fileHandle.write(",signatureid{}, {}".format(int(j),int(j),dissimilarities[i][j]))
+                #print(",signatureid{}, {}".format(int(j),int(j),dissimilarities[i][j]),end='')
+        fileHandle.write("\n")
+fileHandle.close()
